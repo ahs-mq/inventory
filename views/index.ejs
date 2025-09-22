@@ -7,16 +7,24 @@
 </head>
 <body>
     <h1>The sauces</h1>
-    <ul>
+        <ul>
     <% sauces.forEach(sauce => { %>
-      <li><strong><%= sauce.name %></strong> Spice level: <%= sauce.type %></li>
+        <li>
+        <strong><%= sauce.name %></strong> Type: <%= sauce.type %>
+        <form method="POST" action="/delete" style="display:inline;">
+            <input type="hidden" name="id" value="<%= sauce.id %>" />
+            <button type="submit">Delete</button>
+        </form>
+        </li>
     <% }) %>
-  </ul>
+    </ul>
+
   <h2>Add sauce</h2>
   <form method="post" action="/">
     <input type="text" name="brand" placeholder="Brand Name" required />
     <input type="text" name="spice" placeholder="Spice Level" required />
     <button type="submit">Submit</button>
   </form>
+
 </body>
 </html>

@@ -10,7 +10,7 @@ app.set('view engine', 'ejs');
 //express.urlencoded() is a method inbuilt in express to recognize the incoming Request Object as strings or arrays
 app.use(express.urlencoded({ extended: true }));
 
-
+//from env
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -19,7 +19,7 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-
+//create table
 const createTable = async () => {
   const query = `
     CREATE TABLE IF NOT EXISTS sauces (
@@ -38,6 +38,7 @@ const createTable = async () => {
   }
 };
 
+//Create sauces to populate table
 const insertDummySauces = async () => {
   const query = `
     INSERT INTO sauces (name, type)
@@ -57,7 +58,7 @@ const insertDummySauces = async () => {
   }
 };
 
-
+//render page and pass entries from table
 app.get("/", async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM sauces ORDER BY id');
@@ -67,9 +68,10 @@ app.get("/", async (req, res) => {
     console.error('Error fetching sauces:', err);
     res.status(500).send("Something went wrong");
   }
+  console.log(req.body)
 });
 
-
+//add sauce
 app.post("/", async (req, res) => {
   const { brand, spice } = req.body;
 
@@ -86,8 +88,22 @@ app.post("/", async (req, res) => {
     console.error("Error adding sauce:", err);
     res.status(500).send("Failed to add sauce");
   }
-  
+
 });
+//delete sauce
+app.post("/delete", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    await pool.query('DELETE FROM sauces WHERE id = $1', [id]);
+    console.log(`Deleted sauce with ID: ${id}`);
+    res.redirect("/");
+  } catch (err) {
+    console.error("Error deleting sauce:", err);
+    res.status(500).send("Failed to delete sauce");
+  }
+});
+
 
 
 
