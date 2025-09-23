@@ -1,1 +1,1 @@
-echo ".env" >> .gitignore
+echo "database.env" >> .gitignore
